@@ -1,6 +1,10 @@
 var express = require('express');
-const { saveUser } = require('../models/user');
+const { saveUser, checkUser } = require('../models/user');
 const { selectSession, saveSession } = require('../models/session');
+const { saveSessionUser } = require('../models/sessionUser');
+const { selectRound, saveRound } = require('../models/round');
+const { saveScore } = require('../models/score');
+
 var router = express.Router();
 
 
@@ -16,18 +20,19 @@ router
         })
             //add users to database
             .then(() => {
-                let users = [];
-                req.body.players.forEach(user => {
-                    users.push(saveUser(user));
-                });
-                return Promise.all(users);
+                let users = req.body.players.map((item) => { return [item.id, item.email]; });
+                return saveUser(users);
             })
-            .then((result) => {
-                console.log(result);
+            .then(() => {
+                let data = req.body.players.map((item) => { return [req.body.id, item.id]; });
+                saveSessionUser(data);
+            })
+            .then(() => {
+
                 return res.send({ code: 0 });
             })
+
             .catch((e) => {
-                //console.error("Error" + e);
                 if (e.code)
                     return res.send(e);
                 else
@@ -35,28 +40,32 @@ router
             });
     })
     .post('/round', (req, res, next) => {
-        selectSession(req.body.id).then((result) => {
-            //check if session exists
-            if (result.exists === 0) {
+        selectSession(req.body.sessionid).then((result) => {
+            if (result.exists === 0)
                 throw { code: 2 };
-            }
-            return saveSession({ id: req.body.id });
 
+            return selectRound({ id: req.body.id });
         })
-            //add users to database
+            .then((result) => {
+                if (result.exists === 1)
+                    throw { code: 3 };
+                return saveRound({ id: req.body.id, sessionId: req.body.sessionid });
+            })
             .then(() => {
-                let users = [];
-                req.body.players.forEach(user => {
-                    users.push(saveUser(user));
-                });
-                return Promise.all(users);
+                //check if users are registered
+                let userIds = req.body.players.map(user => user.id);
+                return checkUser(userIds);
             })
             .then((result) => {
-                console.log(result);
-                return res.send({ code: 0 });
+                if (result.registered !== req.body.players.length)
+                    throw { code: 4 };
+                //save score results
+                let scores = req.body.players.map((item) => { return [req.body.id, item.id, item.type]; });
+                return saveScore(scores);
+
             })
+            .then(() => { return res.send({ code: 0 }); })
             .catch((e) => {
-                //console.error("Error" + e);
                 if (e.code)
                     return res.send(e);
                 else
