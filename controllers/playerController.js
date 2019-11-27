@@ -1,5 +1,5 @@
 var express = require('express');
-const { getPlayerStatistic } = require('../models/score');
+const { getPlayerStatistic, getPlayerListStatistic, getWinnersByRounds } = require('../models/score');
 
 
 var router = express.Router();
@@ -9,7 +9,7 @@ router
     .get('/statistic', (req, res, next) => {
         getPlayerStatistic(req.query.id).then((result) => {
             //check if session exists
-            return res.send({ statistics: result });
+            return res.send({ code: 0, statistics: result });
 
         })
             .catch((e) => {
@@ -18,6 +18,31 @@ router
             });
     })
 
+    //get list of player statistics ordered in desc way
+    .get('/list', (req, res, next) => {
+        getPlayerListStatistic().then((result) => {
+            //check if session exists
+            return res.send({ code: 0, list: result });
+
+        })
+            .catch((e) => {
+                console.error(e);
+                return res.send({ code: 1 });
+            });
+    })
+
+    //get winners for each round for given session
+    .get('/winersRounds', (req, res, next) => {
+        getWinnersByRounds(req.query.sessionId).then((result) => {
+            //check if session exists
+            return res.send({ code: 0, results: { sessionId: req.query.sessionId, winners: result } });
+
+        })
+            .catch((e) => {
+                console.error(e);
+                return res.send({ code: 1 });
+            });
+    })
 
     ;
 
