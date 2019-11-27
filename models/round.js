@@ -2,7 +2,7 @@ var db = require('../db');
 var mysql = require('mysql');
 
 selectRound = (roundId) => new Promise((resolve, reject) => {
-    db.query('SELECT COUNT(*) as "exists" from round WHERE id = ' + mysql.escape(roundId), function (error, results, fields) {
+    db.query('SELECT COUNT(*) as "exists" from round WHERE id = ' + roundId.id, function (error, results, fields) {
         if (error) {
 
             reject(error);

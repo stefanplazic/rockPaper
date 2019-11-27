@@ -47,6 +47,7 @@ router
             return selectRound({ id: req.body.id });
         })
             .then((result) => {
+
                 if (result.exists === 1)
                     throw { code: 3 };
                 return saveRound({ id: req.body.id, sessionId: req.body.sessionid });
@@ -66,6 +67,7 @@ router
             })
             .then(() => { return res.send({ code: 0 }); })
             .catch((e) => {
+
                 if (e.code)
                     return res.send(e);
                 else
