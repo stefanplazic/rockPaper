@@ -1,5 +1,5 @@
 {
-  "name": "Rock paper scissors",
+  "name": "rock-paper-scissors",
   "version": "1.0.0",
   "private": true,
   "scripts": {
