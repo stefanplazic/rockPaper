@@ -2,9 +2,9 @@ var mysql = require('mysql');
 
 var db_config = {
     host     : 'remotemysql.com', // Your host - either local or cloud
-    user     : 'v5DsTPA8Nm', // your username
-    password : 'zZadpdkrjK', // your password
-    database : 'v5DsTPA8Nm' // database name
+    user     : 'mQbGnmUgIV', // your username
+    password : 'RaxFyFdrLq', // your password
+    database : 'mQbGnmUgIV' // database name
 };
 
 var connection;
