@@ -13,7 +13,6 @@ router
 
         })
             .catch((e) => {
-                console.error(e);
                 return res.send({ code: 1 });
             });
     })
@@ -26,7 +25,6 @@ router
 
         })
             .catch((e) => {
-                console.error(e);
                 return res.send({ code: 1 });
             });
     })
@@ -39,7 +37,7 @@ router
 
         })
             .catch((e) => {
-                console.error(e);
+
                 return res.send({ code: 1 });
             });
     })

@@ -13,7 +13,7 @@ router
         selectSession(req.body.id).then((result) => {
             //check if session exists
             if (result.exists === 1) {
-                throw { code: 2 };
+                throw { errorType: 2 };
             }
             return saveSession({ id: req.body.id });
 
@@ -33,8 +33,8 @@ router
             })
 
             .catch((e) => {
-                if (e.code)
-                    return res.send(e);
+                if (e.errorType)
+                    return res.send({ code: e.errorType });
                 else
                     return res.send({ code: 1 });
             });
@@ -42,14 +42,14 @@ router
     .post('/round', (req, res, next) => {
         selectSession(req.body.sessionid).then((result) => {
             if (result.exists === 0)
-                throw { code: 2 };
+                throw { errorType: 2 };
 
             return selectRound({ id: req.body.id });
         })
             .then((result) => {
 
                 if (result.exists === 1)
-                    throw { code: 3 };
+                    throw { errorType: 3 };
                 return saveRound({ id: req.body.id, sessionId: req.body.sessionid });
             })
             .then(() => {
@@ -59,7 +59,7 @@ router
             })
             .then((result) => {
                 if (result.registered !== req.body.players.length)
-                    throw { code: 4 };
+                    throw { errorType: 4 };
                 //save score results
                 let scores = req.body.players.map((item) => { return [req.body.id, item.id, item.type]; });
                 return saveScore(scores);
@@ -68,10 +68,12 @@ router
             .then(() => { return res.send({ code: 0 }); })
             .catch((e) => {
 
-                if (e.code)
-                    return res.send(e);
+
+                if (e.errorType)
+                    return res.send({ code: e.errorType });
                 else
                     return res.send({ code: 1 });
+
             });
     })
 
