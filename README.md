@@ -56,7 +56,7 @@ Open `db.js` then edit your database params. You will need:
 - hostname;
 - databasename;
 - username;
-- password:
+- password;
 
 ## Running the project
 
